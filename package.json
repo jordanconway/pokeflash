@@ -1,0 +1,11 @@
+{
+  "name": "pokeflash",
+  "private": true,
+  "description": "Premium Pokémon Flashcards",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "9.21.0"
+  }
+}

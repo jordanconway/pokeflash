@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint Codebase
+    runs-on: ubuntu-24.04 # Pinned runner version
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.10.4
+        with:
+          disable-sudo: true
+          egress-policy: audit
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+            registry.npmjs.org:443
+
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false # Harden checkout permissions
+
+      - name: Setup Node.js
+        uses: actions/setup-node@1d71212e24102c4efe0595554d600abb401d5c68 # v4.2.0
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Pinned Dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run Linter
+        run: npm run lint

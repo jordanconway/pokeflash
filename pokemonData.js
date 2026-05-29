@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Auto-generated Pokémon Data for PokéFlash
 const POKEMON_DATA = [
   {

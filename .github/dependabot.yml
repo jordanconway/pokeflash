@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Maintain GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Rely on default-days because actions tags (like v4) are not always parsed as SemVer
+    cooldown:
+      default-days: 7
+
+  # Maintain npm dev dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
