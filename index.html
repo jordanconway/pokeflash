@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PokéFlash — Premium Pokémon Flashcards</title>
+  <meta name="description" content="Study and test your knowledge of all 1025 Pokémon with dynamic cards, cry audio, and repetition-free randomized cycling.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Music/Sound FX elements -->
+  <audio id="sound-flip" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
+  <audio id="sound-next" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
+  <audio id="sound-reveal" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto"></audio>
+
+  <header>
+    <div class="logo-container">
+      <svg class="logo-icon" viewBox="0 0 24 24">
+        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 19.8,11H15.8C15.4,8.8 13.9,7.1 12,6.3V4M4.2,13H8.2C8.6,15.2 10.1,16.9 12,17.7V20A8,8 0 0,1 4.2,13M12,20V17.7C13.9,16.9 15.4,15.2 15.8,13H19.8A8,8 0 0,1 12,20M12,4V6.3C10.1,7.1 8.6,8.8 8.2,11H4.2A8,8 0 0,1 12,4M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z" />
+      </svg>
+      <h1>PokéFlash</h1>
+    </div>
+    
+    <div class="header-controls">
+      <!-- Search Input Toggle -->
+      <button id="btn-search-toggle" class="btn-icon" title="Search Pokémon (S)">
+        <svg viewBox="0 0 24 24">
+          <path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+        </svg>
+      </button>
+
+      <!-- Audio Mute Button -->
+      <button id="btn-sound-toggle" class="btn-icon" title="Toggle Sound (M)">
+        <svg id="sound-icon-unmuted" viewBox="0 0 24 24">
+          <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.07,19.86 21,16.28 21,12C21,7.72 18.07,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+        </svg>
+        <svg id="sound-icon-muted" viewBox="0 0 24 24" style="display:none;">
+          <path d="M12,4L9.91,6.09L12,8.18M19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.07,19.86 21,16.28 21,12C21,9.08 19.35,6.5 17,5.18L15.54,6.63C17.58,7.78 19,10.03 19,12M12,20V14.18L8.32,17.86M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.43 14,18.67V20.73C15.38,20.45 16.63,19.8 17.68,18.96L20.73,22L22,20.73L4.27,3M14,3.23V5.29C14.83,5.53 15.58,5.92 16.25,6.43L14.77,7.91C14.53,7.79 14.27,7.71 14,7.67V9.82L16.3,12.11C16.42,12.07 16.5,12 16.5,12C16.5,10.23 15.5,8.71 14,7.97V3.23Z" />
+        </svg>
+      </button>
+
+      <!-- Theme Switcher -->
+      <button id="btn-theme-toggle" class="btn-icon" title="Toggle Light/Dark Mode (T)">
+        <svg viewBox="0 0 24 24">
+          <path d="M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Progress Indicator -->
+    <div class="tracker-container">
+      <span class="tracker-text">Progress: <span id="progress-count">0</span> / 1025</span>
+      <div class="progress-bar-bg">
+        <div id="progress-bar" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- 3D Interactive Card Scene -->
+    <div class="card-scene">
+      <div id="card" class="card-container">
+        
+        <!-- CARD FRONT (Guessing Silhouette) -->
+        <div class="card-face card-front">
+          <span id="card-front-id" class="card-number-tag">#0000</span>
+          
+          <div class="sprite-container">
+            <svg class="pokeball-bg" viewBox="0 0 24 24">
+              <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 19.8,11H15.8C15.4,8.8 13.9,7.1 12,6.3V4M4.2,13H8.2C8.6,15.2 10.1,16.9 12,17.7V20A8,8 0 0,1 4.2,13M12,20V17.7C13.9,16.9 15.4,15.2 15.8,13H19.8A8,8 0 0,1 12,20M12,4V6.3C10.1,7.1 8.6,8.8 8.2,11H4.2A8,8 0 0,1 12,4M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z" />
+            </svg>
+            <img id="front-artwork" class="pokemon-artwork silhouette" src="" alt="Mystery Pokémon">
+          </div>
+          
+          <div>
+            <div class="prompt-text">Who's That Pokémon?</div>
+            <div class="tap-hint">Tap to Flip & Reveal</div>
+          </div>
+        </div>
+
+        <!-- CARD BACK (Revealed Information) -->
+        <div class="card-face card-back">
+          <div class="card-back-header">
+            <span id="card-back-id" class="card-number-tag">#0000</span>
+            <!-- Re-play Cry audio button -->
+            <button id="btn-play-cry" class="btn-icon" title="Listen to Cry (C)" style="width: 32px; height: 32px; border-radius: 8px;">
+              <svg viewBox="0 0 24 24">
+                <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.07,19.86 21,16.28 21,12C21,7.72 18.07,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="sprite-container">
+            <img id="back-artwork" class="pokemon-artwork" src="" alt="Pokémon Artwork">
+          </div>
+
+          <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+            <h2 id="pokemon-name" class="pokemon-name">Loading...</h2>
+            
+            <div id="types-container" class="types-container">
+              <!-- Dynamically populated type badges -->
+            </div>
+
+            <!-- Stats Rows -->
+            <div class="stats-container">
+              <div class="stat-row">
+                <span class="stat-label">HP</span>
+                <span id="stat-hp" class="stat-value">--</span>
+                <div class="stat-bar-bg"><div id="bar-hp" class="stat-bar-fill"></div></div>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">ATK</span>
+                <span id="stat-atk" class="stat-value">--</span>
+                <div class="stat-bar-bg"><div id="bar-atk" class="stat-bar-fill"></div></div>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">DEF</span>
+                <span id="stat-def" class="stat-value">--</span>
+                <div class="stat-bar-bg"><div id="bar-def" class="stat-bar-fill"></div></div>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">SPD</span>
+                <span id="stat-spd" class="stat-value">--</span>
+                <div class="stat-bar-bg"><div id="bar-spd" class="stat-bar-fill"></div></div>
+              </div>
+            </div>
+
+            <p id="pokemon-desc" class="flavor-text">...</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Main controls -->
+    <div class="controls-footer">
+      <button id="btn-reveal" class="btn-icon" title="Flip Card (Space)" style="width: 48px; height: 48px; border-radius: 16px;">
+        <svg viewBox="0 0 24 24">
+          <path d="M12,18A6,6 0 1,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z" />
+        </svg>
+      </button>
+      <button id="btn-next" class="btn-primary">
+        Next Pokémon
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: currentColor;">
+          <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
+        </svg>
+      </button>
+    </div>
+  </main>
+
+  <!-- Search Modal -->
+  <dialog id="search-dialog" style="border: none; background: transparent; padding: 0;">
+    <div class="search-modal-content" style="background: var(--bg-color); border: 1px solid var(--card-border); border-radius: 20px; padding: 1.5rem; width: 320px; box-shadow: 0 20px 40px var(--card-shadow); color: var(--text-primary); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+      <h3 style="margin-bottom: 1rem; font-weight: 800;">Go To Pokémon</h3>
+      <input type="text" id="search-input" placeholder="Enter name or ID..." style="width: 100%; height: 40px; border-radius: 10px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.2); color: inherit; padding: 0.5rem 1rem; outline: none; font-family: inherit; font-size: 0.95rem; margin-bottom: 1rem; box-sizing: border-box;">
+      <div id="search-suggestions" style="max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem;">
+        <!-- Search suggestion results dynamically inserted -->
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <button id="btn-search-close" class="btn-icon" style="flex: 1; border-radius: 12px; height: 38px;">Cancel</button>
+        <button id="btn-search-go" class="btn-primary" style="flex: 1; border-radius: 12px; height: 38px; font-size: 0.9rem; box-shadow: none;">Search</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="key-hint"><kbd>Space</kbd> Flip</div>
+    <div class="key-hint"><kbd>→</kbd> Next</div>
+    <div class="key-hint"><kbd>S</kbd> Search</div>
+    <div class="key-hint"><kbd>M</kbd> Mute</div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="pokemonData.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
