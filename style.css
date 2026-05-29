@@ -205,6 +205,50 @@ main {
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
 }
 
+/* Segmented Study Mode Control with Navigation Arrows */
+.navigation-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 440px;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.btn-icon-nav {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-primary);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.btn-icon-nav:hover {
+  border-color: var(--type-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--type-color-rgb), 0.15);
+}
+
+.btn-icon-nav:active {
+  transform: translateY(1px);
+}
+
+.btn-icon-nav svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
 /* Segmented Study Mode Control */
 .mode-toggle-container {
   display: flex;
