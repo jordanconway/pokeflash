@@ -506,6 +506,36 @@ main {
   align-items: center;
 }
 
+.btn-secondary {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: 800;
+  height: 48px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-secondary:hover {
+  border-color: var(--type-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(var(--type-color-rgb), 0.15);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+}
+
 .btn-primary {
   flex: 1;
   background: linear-gradient(135deg, var(--type-color), var(--type-gradient-2));

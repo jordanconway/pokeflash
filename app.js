@@ -354,34 +354,6 @@ function applyTypeTheme(type) {
   document.documentElement.style.setProperty('--type-gradient-2', theme.g2);
 }
 
-// Interactive 3D Card Tilt
-function handleCardTilt(e) {
-  const rect = card.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  
-  const xc = rect.width / 2;
-  const yc = rect.height / 2;
-  
-  // Max rotation degree
-  const maxRotation = 12;
-  const rotateX = ((yc - y) / yc) * maxRotation;
-  const rotateY = ((x - xc) / xc) * maxRotation;
-  
-  card.style.transform = `rotateX(${rotateX}deg) rotateY(${state.isFlipped ? rotateY + 180 : rotateY}deg) scale(1.03)`;
-  
-  // Set glow coordinates
-  const currentFace = state.isFlipped ? card.querySelector('.card-back') : card.querySelector('.card-front');
-  const percentX = (x / rect.width) * 100;
-  const percentY = (y / rect.height) * 100;
-  currentFace.style.setProperty('--mouse-x', `${percentX}%`);
-  currentFace.style.setProperty('--mouse-y', `${percentY}%`);
-}
-
-function resetCardTilt() {
-  card.style.transform = `rotateX(0deg) rotateY(${state.isFlipped ? 180 : 0}deg) scale(1)`;
-}
-
 // Action Handlers
 function flipCard() {
   state.isFlipped = !state.isFlipped;
@@ -544,15 +516,7 @@ function setupEventListeners() {
   modeBtnGuessing.addEventListener('click', () => setStudyMode('guessing'));
   modeBtnLearning.addEventListener('click', () => setStudyMode('learning'));
   
-  // Card 3D tilt effects
-  card.addEventListener('mousemove', handleCardTilt);
-  card.addEventListener('mouseleave', resetCardTilt);
-  card.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) {
-      handleCardTilt(e.touches[0]);
-    }
-  });
-  card.addEventListener('touchend', resetCardTilt);
+  
   
   // Search features
   searchToggle.addEventListener('click', showSearchModal);
