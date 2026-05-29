@@ -571,6 +571,9 @@ function setupEventListeners() {
     // Block triggers when input elements are focused
     if (document.activeElement.tagName === 'INPUT') return;
     
+    // Ignore shortcut keys if modifier keys are active (e.g. Cmd-Shift-T, Cmd-S, Cmd-R)
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    
     switch (e.code) {
       case 'Space':
         e.preventDefault();
