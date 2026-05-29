@@ -47,17 +47,6 @@
         </svg>
       </button>
 
-      <!-- Study Mode Toggle (Guessing vs Learning) -->
-      <button id="btn-mode-toggle" class="btn-icon" title="Toggle Guessing/Learning Mode (L)">
-        <!-- Guessing (Eye Slash) -->
-        <svg id="mode-icon-guessing" viewBox="0 0 24 24">
-          <path d="M11.83,9L15,12.17C15,12.11 15,12.06 15,12A3,3 0 0,0 12,9C11.94,9 11.89,9 11.83,9M7.53,9.8L9.08,11.35C9.03,11.56 9,11.77 9,12A3,3 0 0,0 12,15C12.23,15 12.44,14.97 12.65,14.92L14.2,16.47C13.53,16.8 12.79,17 12,17A5,5 0 0,1 7,12C7,11.21 7.2,10.47 7.53,9.8M2,4.27L4.28,6.55L4.73,7C3.08,8.3 1.78,10 1,12C2.73,16.49 7,19.5 12,19.5C13.79,19.5 15.5,19.1 17,18.36L17.41,18.77L19.73,21L21,19.73L3.27,3L2,4.27M12,7A5,5 0 0,1 17,12C17,12.64 16.87,13.25 16.65,13.8L20.4,17.55C21.43,15.96 22.2,14.1 22.6,12C20.87,7.51 16.6,4.5 11.75,4.5C10.29,4.5 8.9,4.78 7.61,5.32L9.36,7.07C10.1,7 10.9,7 12,7Z" />
-        </svg>
-        <!-- Learning (Eye Open) -->
-        <svg id="mode-icon-learning" viewBox="0 0 24 24" style="display:none;">
-          <path d="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17Z" />
-        </svg>
-      </button>
     </div>
   </header>
 
@@ -68,6 +57,12 @@
       <div class="progress-bar-bg">
         <div id="progress-bar" class="progress-bar-fill"></div>
       </div>
+    </div>
+
+    <!-- Segmented Study Mode Control -->
+    <div class="mode-toggle-container">
+      <button id="mode-btn-guessing" class="mode-segment active">Guessing Mode</button>
+      <button id="mode-btn-learning" class="mode-segment">Learning Mode</button>
     </div>
 
     <!-- 3D Interactive Card Scene -->

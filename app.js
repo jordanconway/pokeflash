@@ -48,7 +48,8 @@ const btnReveal = document.getElementById('btn-reveal');
 const btnNext = document.getElementById('btn-next');
 const btnSoundToggle = document.getElementById('btn-sound-toggle');
 const btnThemeToggle = document.getElementById('btn-theme-toggle');
-const btnModeToggle = document.getElementById('btn-mode-toggle');
+const modeBtnGuessing = document.getElementById('mode-btn-guessing');
+const modeBtnLearning = document.getElementById('mode-btn-learning');
 const btnPlayCry = document.getElementById('btn-play-cry');
 
 const searchToggle = document.getElementById('btn-search-toggle');
@@ -127,21 +128,18 @@ function initStudyModeSettings() {
 }
 
 function updateStudyModeUI() {
-  const guessingIcon = document.getElementById('mode-icon-guessing');
-  const learningIcon = document.getElementById('mode-icon-learning');
   if (state.studyMode === 'learning') {
-    guessingIcon.style.display = 'none';
-    learningIcon.style.display = 'block';
-    btnModeToggle.title = "Switch to Guessing Mode (L)";
+    modeBtnGuessing.classList.remove('active');
+    modeBtnLearning.classList.add('active');
   } else {
-    guessingIcon.style.display = 'block';
-    learningIcon.style.display = 'none';
-    btnModeToggle.title = "Switch to Learning Mode (L)";
+    modeBtnGuessing.classList.add('active');
+    modeBtnLearning.classList.remove('active');
   }
 }
 
-function toggleStudyMode() {
-  state.studyMode = state.studyMode === 'guessing' ? 'learning' : 'guessing';
+function setStudyMode(mode) {
+  if (state.studyMode === mode) return;
+  state.studyMode = mode;
   localStorage.setItem('pokeflash_study_mode', state.studyMode);
   updateStudyModeUI();
   
@@ -155,6 +153,11 @@ function toggleStudyMode() {
       flipCard();
     }
   }
+}
+
+function toggleStudyMode() {
+  const targetMode = state.studyMode === 'guessing' ? 'learning' : 'guessing';
+  setStudyMode(targetMode);
 }
 
 // Deck Management (Fisher-Yates Shuffle)
@@ -525,8 +528,9 @@ function setupEventListeners() {
   // Theme control
   btnThemeToggle.addEventListener('click', toggleTheme);
   
-  // Study Mode control
-  btnModeToggle.addEventListener('click', toggleStudyMode);
+  // Study Mode controls
+  modeBtnGuessing.addEventListener('click', () => setStudyMode('guessing'));
+  modeBtnLearning.addEventListener('click', () => setStudyMode('learning'));
   
   // Card 3D tilt effects
   card.addEventListener('mousemove', handleCardTilt);
