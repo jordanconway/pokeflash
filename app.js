@@ -111,6 +111,20 @@ function playSFX(audioElement) {
 function initThemeSettings() {
   const storedTheme = localStorage.getItem('pokeflash_theme') || 'dark';
   document.body.setAttribute('data-theme', storedTheme);
+  updateThemeUI();
+}
+
+function updateThemeUI() {
+  const currentTheme = document.body.getAttribute('data-theme');
+  const moonIcon = document.getElementById('theme-icon-moon');
+  const sunIcon = document.getElementById('theme-icon-sun');
+  if (currentTheme === 'light') {
+    moonIcon.style.display = 'block';
+    sunIcon.style.display = 'none';
+  } else {
+    moonIcon.style.display = 'none';
+    sunIcon.style.display = 'block';
+  }
 }
 
 function toggleTheme() {
@@ -118,6 +132,7 @@ function toggleTheme() {
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
   document.body.setAttribute('data-theme', newTheme);
   localStorage.setItem('pokeflash_theme', newTheme);
+  updateThemeUI();
 }
 
 // Study Mode Settings Initialization
