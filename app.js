@@ -47,6 +47,8 @@ const progressBar = document.getElementById('progress-bar');
 
 const btnReveal = document.getElementById('btn-reveal');
 const btnNext = document.getElementById('btn-next');
+const btnPrevArrow = document.getElementById('btn-prev-arrow');
+const btnNextArrow = document.getElementById('btn-next-arrow');
 const btnSoundToggle = document.getElementById('btn-sound-toggle');
 const btnThemeToggle = document.getElementById('btn-theme-toggle');
 const modeBtnGuessing = document.getElementById('mode-btn-guessing');
@@ -214,6 +216,14 @@ function updateProgressUI() {
   progressCount.textContent = state.currentIndex + 1;
   const progressPercent = ((state.currentIndex + 1) / state.deck.length) * 100;
   progressBar.style.width = `${progressPercent}%`;
+
+  if (state.currentIndex === 0) {
+    btnPrevArrow.style.opacity = '0.3';
+    btnPrevArrow.style.pointerEvents = 'none';
+  } else {
+    btnPrevArrow.style.opacity = '1';
+    btnPrevArrow.style.pointerEvents = 'auto';
+  }
 }
 
 // Pokemon Loader
@@ -408,6 +418,16 @@ function nextPokemon() {
   loadCurrentPokemon();
 }
 
+function previousPokemon() {
+  if (state.currentIndex > 0) {
+    playSFX(soundNext);
+    state.currentIndex--;
+    saveDeckToStorage();
+    updateProgressUI();
+    loadCurrentPokemon();
+  }
+}
+
 // Search Modal Handlers
 function showSearchModal() {
   searchDialog.showModal();
@@ -501,8 +521,10 @@ function setupEventListeners() {
     flipCard();
   });
   
-  // Next Card trigger
+  // Navigation triggers
   btnNext.addEventListener('click', nextPokemon);
+  btnPrevArrow.addEventListener('click', previousPokemon);
+  btnNextArrow.addEventListener('click', nextPokemon);
   
   // Sound controls
   btnSoundToggle.addEventListener('click', toggleMute);
@@ -546,6 +568,10 @@ function setupEventListeners() {
       case 'Enter':
         e.preventDefault();
         nextPokemon();
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        previousPokemon();
         break;
       case 'KeyS':
         e.preventDefault();
