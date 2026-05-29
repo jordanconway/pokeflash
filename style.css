@@ -238,7 +238,20 @@ main {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
-  transition: background var(--transition-speed) ease, border var(--transition-speed) ease;
+  transition: background var(--transition-speed) ease, border var(--transition-speed) ease, opacity 0.4s ease, visibility 0.4s ease;
+}
+
+/* Hide opposite face completely during flip to avoid transparent overlay bleeding */
+.card-container:not(.flipped) .card-back {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.card-container.flipped .card-front {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Card Glow Effect */
