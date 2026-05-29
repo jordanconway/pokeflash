@@ -38,6 +38,7 @@ const frontArtwork = document.getElementById('front-artwork');
 const backArtwork = document.getElementById('back-artwork');
 const cardFrontId = document.getElementById('card-front-id');
 const cardBackId = document.getElementById('card-back-id');
+const frontPokemonName = document.getElementById('front-pokemon-name');
 const pokemonName = document.getElementById('pokemon-name');
 const typesContainer = document.getElementById('types-container');
 const pokemonDesc = document.getElementById('pokemon-desc');
@@ -234,6 +235,7 @@ function loadCurrentPokemon() {
   const formattedId = `#${String(pokemonId).padStart(4, '0')}`;
   cardFrontId.textContent = formattedId;
   cardBackId.textContent = formattedId;
+  frontPokemonName.textContent = basicInfo.name;
 
   if (state.studyMode === 'learning') {
     state.isFlipped = true;
