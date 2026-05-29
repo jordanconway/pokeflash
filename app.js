@@ -26,6 +26,7 @@ let state = {
   currentIndex: 0,
   isFlipped: false,
   isMuted: false,
+  studyMode: 'guessing', // 'guessing' or 'learning'
   currentPokemon: null,
   currentCryUrl: null,
   isLoadingDetails: false
@@ -47,6 +48,7 @@ const btnReveal = document.getElementById('btn-reveal');
 const btnNext = document.getElementById('btn-next');
 const btnSoundToggle = document.getElementById('btn-sound-toggle');
 const btnThemeToggle = document.getElementById('btn-theme-toggle');
+const btnModeToggle = document.getElementById('btn-mode-toggle');
 const btnPlayCry = document.getElementById('btn-play-cry');
 
 const searchToggle = document.getElementById('btn-search-toggle');
@@ -66,6 +68,7 @@ let cryAudio = null;
 document.addEventListener('DOMContentLoaded', () => {
   initSoundSettings();
   initThemeSettings();
+  initStudyModeSettings();
   initDeck();
   setupEventListeners();
   loadCurrentPokemon();
@@ -116,6 +119,44 @@ function toggleTheme() {
   localStorage.setItem('pokeflash_theme', newTheme);
 }
 
+// Study Mode Settings Initialization
+function initStudyModeSettings() {
+  const storedMode = localStorage.getItem('pokeflash_study_mode') || 'guessing';
+  state.studyMode = storedMode;
+  updateStudyModeUI();
+}
+
+function updateStudyModeUI() {
+  const guessingIcon = document.getElementById('mode-icon-guessing');
+  const learningIcon = document.getElementById('mode-icon-learning');
+  if (state.studyMode === 'learning') {
+    guessingIcon.style.display = 'none';
+    learningIcon.style.display = 'block';
+    btnModeToggle.title = "Switch to Guessing Mode (L)";
+  } else {
+    guessingIcon.style.display = 'block';
+    learningIcon.style.display = 'none';
+    btnModeToggle.title = "Switch to Learning Mode (L)";
+  }
+}
+
+function toggleStudyMode() {
+  state.studyMode = state.studyMode === 'guessing' ? 'learning' : 'guessing';
+  localStorage.setItem('pokeflash_study_mode', state.studyMode);
+  updateStudyModeUI();
+  
+  // Re-evaluate current card state on toggle
+  if (state.studyMode === 'learning') {
+    if (!state.isFlipped) {
+      flipCard();
+    }
+  } else {
+    if (state.isFlipped) {
+      flipCard();
+    }
+  }
+}
+
 // Deck Management (Fisher-Yates Shuffle)
 function initDeck() {
   const storedDeck = localStorage.getItem('pokeflash_deck');
@@ -162,8 +203,6 @@ function loadCurrentPokemon() {
   const basicInfo = POKEMON_DATA.find(p => p.id === pokemonId);
   
   state.currentPokemon = basicInfo;
-  state.isFlipped = false;
-  card.classList.remove('flipped');
   
   // Reset back card skeleton state
   resetCardBackDetails();
@@ -173,13 +212,20 @@ function loadCurrentPokemon() {
   frontArtwork.src = artworkUrl;
   backArtwork.src = artworkUrl;
   
-  // Add silhouette class initially
-  frontArtwork.classList.add('silhouette');
-  
   // Format IDs
   const formattedId = `#${String(pokemonId).padStart(4, '0')}`;
   cardFrontId.textContent = formattedId;
   cardBackId.textContent = formattedId;
+
+  if (state.studyMode === 'learning') {
+    state.isFlipped = true;
+    card.classList.add('flipped');
+    frontArtwork.classList.remove('silhouette');
+  } else {
+    state.isFlipped = false;
+    card.classList.remove('flipped');
+    frontArtwork.classList.add('silhouette');
+  }
   
   // Fetch detailed data in parallel background
   fetchPokemonDetails(pokemonId);
@@ -252,6 +298,11 @@ async function fetchPokemonDetails(id) {
 
     // Cry Audio Setup
     state.currentCryUrl = data.cries?.latest || data.cries?.legacy;
+    
+    // Play cry if card is already flipped (Learning Mode)
+    if (state.isFlipped && state.currentCryUrl) {
+      playPokemonCry();
+    }
     
     // Fetch Species description
     const speciesRes = await fetch(data.species.url);
@@ -474,6 +525,9 @@ function setupEventListeners() {
   // Theme control
   btnThemeToggle.addEventListener('click', toggleTheme);
   
+  // Study Mode control
+  btnModeToggle.addEventListener('click', toggleStudyMode);
+  
   // Card 3D tilt effects
   card.addEventListener('mousemove', handleCardTilt);
   card.addEventListener('mouseleave', resetCardTilt);
@@ -519,6 +573,10 @@ function setupEventListeners() {
       case 'KeyT':
         e.preventDefault();
         toggleTheme();
+        break;
+      case 'KeyL':
+        e.preventDefault();
+        toggleStudyMode();
         break;
       case 'KeyC':
         e.preventDefault();
