@@ -238,11 +238,9 @@ function loadCurrentPokemon() {
   if (state.studyMode === 'learning') {
     state.isFlipped = true;
     card.classList.add('flipped');
-    frontArtwork.classList.remove('silhouette');
   } else {
     state.isFlipped = false;
     card.classList.remove('flipped');
-    frontArtwork.classList.add('silhouette');
   }
   
   // Fetch detailed data in parallel background
@@ -390,7 +388,6 @@ function flipCard() {
   
   if (state.isFlipped) {
     card.classList.add('flipped');
-    frontArtwork.classList.remove('silhouette');
     playSFX(soundReveal);
     
     // Play Pokemon Cry if loaded
