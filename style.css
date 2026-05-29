@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
+@font-face {
+  font-family: 'Unown';
+  src: url('Unown.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --bg-color: #0f111a;
   --text-primary: #f8fafc;
@@ -355,6 +362,19 @@ main {
   fill: var(--text-primary);
   z-index: -1;
   pointer-events: none;
+}
+
+.unown-name {
+  font-family: 'Unown', sans-serif;
+  font-size: 2.25rem;
+  letter-spacing: 0.1em;
+  color: var(--type-color);
+  text-align: center;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+  user-select: none;
+  z-index: 2;
 }
 
 .prompt-text {
