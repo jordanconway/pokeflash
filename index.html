@@ -58,10 +58,23 @@
   <main>
     <!-- Progress Indicator -->
     <div class="tracker-container">
-      <span class="tracker-text">Progress: <span id="progress-count">0</span> / 1025</span>
+      <span class="tracker-text">Progress: <span id="progress-count">0</span> / <span id="progress-total">1025</span></span>
       <div class="progress-bar-bg">
         <div id="progress-bar" class="progress-bar-fill"></div>
       </div>
+    </div>
+
+    <!-- Generation Filter -->
+    <div class="generation-container">
+      <button class="gen-btn active" data-gen="1">Gen I</button>
+      <button class="gen-btn active" data-gen="2">Gen II</button>
+      <button class="gen-btn active" data-gen="3">Gen III</button>
+      <button class="gen-btn active" data-gen="4">Gen IV</button>
+      <button class="gen-btn active" data-gen="5">Gen V</button>
+      <button class="gen-btn active" data-gen="6">Gen VI</button>
+      <button class="gen-btn active" data-gen="7">Gen VII</button>
+      <button class="gen-btn active" data-gen="8">Gen VIII</button>
+      <button class="gen-btn active" data-gen="9">Gen IX</button>
     </div>
 
     <!-- Segmented Study Mode Control with Navigation Arrows -->

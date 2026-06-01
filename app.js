@@ -20,6 +20,18 @@ const TYPE_THEMES = {
   dark: { color: '#705746', rgb: '112, 87, 70', g1: '#4F3F35', g2: '#705746' }
 };
 
+const GENERATION_RANGES = {
+  1: { start: 1, end: 151 },
+  2: { start: 152, end: 251 },
+  3: { start: 252, end: 386 },
+  4: { start: 387, end: 493 },
+  5: { start: 494, end: 649 },
+  6: { start: 650, end: 721 },
+  7: { start: 722, end: 809 },
+  8: { start: 810, end: 905 },
+  9: { start: 906, end: 1025 }
+};
+
 // Global App State
 let state = {
   deck: [],
@@ -29,7 +41,8 @@ let state = {
   studyMode: 'guessing', // 'guessing' or 'learning'
   currentPokemon: null,
   currentCryUrl: null,
-  isLoadingDetails: false
+  isLoadingDetails: false,
+  selectedGenerations: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 };
 
 // DOM Elements
@@ -43,6 +56,7 @@ const pokemonName = document.getElementById('pokemon-name');
 const typesContainer = document.getElementById('types-container');
 const pokemonDesc = document.getElementById('pokemon-desc');
 const progressCount = document.getElementById('progress-count');
+const progressTotal = document.getElementById('progress-total');
 const progressBar = document.getElementById('progress-bar');
 
 const btnReveal = document.getElementById('btn-reveal');
@@ -180,12 +194,26 @@ function toggleStudyMode() {
 
 // Deck Management (Fisher-Yates Shuffle)
 function initDeck() {
+  const storedGenerations = localStorage.getItem('pokeflash_generations');
+  if (storedGenerations) {
+    state.selectedGenerations = JSON.parse(storedGenerations);
+  } else {
+    state.selectedGenerations = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  }
+  updateGenerationUI();
+
   const storedDeck = localStorage.getItem('pokeflash_deck');
   const storedIndex = localStorage.getItem('pokeflash_index');
 
   if (storedDeck) {
     state.deck = JSON.parse(storedDeck);
     state.currentIndex = parseInt(storedIndex, 10) || 0;
+    
+    // Validate deck matching selected generations
+    const isValid = state.deck.length > 0 && state.deck.every(id => isIdInSelectedGenerations(id));
+    if (!isValid) {
+      createNewDeck();
+    }
   } else {
     createNewDeck();
   }
@@ -193,16 +221,27 @@ function initDeck() {
 }
 
 function createNewDeck() {
-  const totalPokemon = POKEMON_DATA.length; // 1025
-  const newDeck = Array.from({ length: totalPokemon }, (_, i) => i + 1);
-  
+  const activeIds = [];
+  state.selectedGenerations.forEach(gen => {
+    const range = GENERATION_RANGES[gen];
+    for (let id = range.start; id <= range.end; id++) {
+      activeIds.push(id);
+    }
+  });
+
+  if (activeIds.length === 0) {
+    for (let id = 1; id <= 1025; id++) {
+      activeIds.push(id);
+    }
+  }
+
   // Shuffle algorithm
-  for (let i = newDeck.length - 1; i > 0; i--) {
+  for (let i = activeIds.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
+    [activeIds[i], activeIds[j]] = [activeIds[j], activeIds[i]];
   }
   
-  state.deck = newDeck;
+  state.deck = activeIds;
   state.currentIndex = 0;
   saveDeckToStorage();
 }
@@ -214,6 +253,7 @@ function saveDeckToStorage() {
 
 function updateProgressUI() {
   progressCount.textContent = state.currentIndex + 1;
+  progressTotal.textContent = state.deck.length;
   const progressPercent = ((state.currentIndex + 1) / state.deck.length) * 100;
   progressBar.style.width = `${progressPercent}%`;
 
@@ -224,6 +264,44 @@ function updateProgressUI() {
     btnPrevArrow.style.opacity = '1';
     btnPrevArrow.style.pointerEvents = 'auto';
   }
+}
+
+function isIdInSelectedGenerations(id) {
+  return state.selectedGenerations.some(gen => {
+    const range = GENERATION_RANGES[gen];
+    return id >= range.start && id <= range.end;
+  });
+}
+
+function updateGenerationUI() {
+  const genButtons = document.querySelectorAll('.gen-btn');
+  genButtons.forEach(btn => {
+    const gen = parseInt(btn.dataset.gen, 10);
+    if (state.selectedGenerations.includes(gen)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+function toggleGeneration(gen) {
+  const index = state.selectedGenerations.indexOf(gen);
+  if (index !== -1) {
+    if (state.selectedGenerations.length > 1) {
+      state.selectedGenerations.splice(index, 1);
+    }
+  } else {
+    state.selectedGenerations.push(gen);
+    state.selectedGenerations.sort((a, b) => a - b);
+  }
+  
+  localStorage.setItem('pokeflash_generations', JSON.stringify(state.selectedGenerations));
+  updateGenerationUI();
+  
+  createNewDeck();
+  updateProgressUI();
+  loadCurrentPokemon();
 }
 
 // Pokemon Loader
@@ -448,8 +526,8 @@ function handleSearchInput() {
   
   // Find top 5 matches
   const matches = POKEMON_DATA.filter(p => 
-    p.name.toLowerCase().includes(query) || 
-    p.id.toString() === query
+    (p.name.toLowerCase().includes(query) || p.id.toString() === query) &&
+    isIdInSelectedGenerations(p.id)
   ).slice(0, 5);
   
   matches.forEach(p => {
@@ -482,8 +560,8 @@ function executeSearchGo() {
   if (!query) return;
   
   const found = POKEMON_DATA.find(p => 
-    p.name.toLowerCase() === query || 
-    p.id.toString() === query
+    (p.name.toLowerCase() === query || p.id.toString() === query) &&
+    isIdInSelectedGenerations(p.id)
   );
   
   if (found) {
@@ -539,6 +617,14 @@ function setupEventListeners() {
   // Study Mode controls
   modeBtnGuessing.addEventListener('click', () => setStudyMode('guessing'));
   modeBtnLearning.addEventListener('click', () => setStudyMode('learning'));
+  
+  // Generation filter controls
+  document.querySelectorAll('.gen-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const gen = parseInt(btn.dataset.gen, 10);
+      toggleGeneration(gen);
+    });
+  });
   
   
   
