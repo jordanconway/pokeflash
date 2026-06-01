@@ -205,6 +205,44 @@ main {
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
 }
 
+.generation-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.gen-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-secondary);
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.gen-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.gen-btn.active {
+  background: var(--type-color);
+  color: #fff;
+  border-color: var(--type-color);
+  box-shadow: 0 0 12px rgba(var(--type-color-rgb), 0.35);
+}
+
 /* Segmented Study Mode Control with Navigation Arrows */
 .navigation-header {
   display: flex;
