@@ -58,6 +58,7 @@ const pokemonDesc = document.getElementById('pokemon-desc');
 const progressCount = document.getElementById('progress-count');
 const progressTotal = document.getElementById('progress-total');
 const progressBar = document.getElementById('progress-bar');
+const btnResetDeck = document.getElementById('btn-reset-deck');
 
 const btnReveal = document.getElementById('btn-reveal');
 const btnNext = document.getElementById('btn-next');
@@ -603,6 +604,13 @@ function jumpToRandom() {
   jumpToPokemon(randomId);
 }
 
+function resetDeck() {
+  playSFX(soundNext);
+  createNewDeck();
+  updateProgressUI();
+  loadCurrentPokemon();
+}
+
 // Event Listeners Setup
 function setupEventListeners() {
   // Flip Card trigger
@@ -644,6 +652,7 @@ function setupEventListeners() {
   // Search features
   searchToggle.addEventListener('click', showSearchModal);
   btnRandom.addEventListener('click', jumpToRandom);
+  btnResetDeck.addEventListener('click', resetDeck);
   btnSearchClose.addEventListener('click', closeSearchModal);
   btnSearchGo.addEventListener('click', executeSearchGo);
   searchInput.addEventListener('input', handleSearchInput);
@@ -696,6 +705,10 @@ function setupEventListeners() {
       case 'KeyR':
         e.preventDefault();
         jumpToRandom();
+        break;
+      case 'KeyU':
+        e.preventDefault();
+        resetDeck();
         break;
     }
   });
