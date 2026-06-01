@@ -56,6 +56,7 @@ const modeBtnLearning = document.getElementById('mode-btn-learning');
 const btnPlayCry = document.getElementById('btn-play-cry');
 
 const searchToggle = document.getElementById('btn-search-toggle');
+const btnRandom = document.getElementById('btn-random');
 const searchDialog = document.getElementById('search-dialog');
 const searchInput = document.getElementById('search-input');
 const searchSuggestions = document.getElementById('search-suggestions');
@@ -512,6 +513,18 @@ function jumpToPokemon(pokemonId) {
   loadCurrentPokemon();
 }
 
+function jumpToRandom() {
+  const totalPokemon = POKEMON_DATA.length;
+  let randomId = Math.floor(Math.random() * totalPokemon) + 1;
+  if (state.currentPokemon && randomId === state.currentPokemon.id && totalPokemon > 1) {
+    while (randomId === state.currentPokemon.id) {
+      randomId = Math.floor(Math.random() * totalPokemon) + 1;
+    }
+  }
+  playSFX(soundNext);
+  jumpToPokemon(randomId);
+}
+
 // Event Listeners Setup
 function setupEventListeners() {
   // Flip Card trigger
@@ -544,6 +557,7 @@ function setupEventListeners() {
   
   // Search features
   searchToggle.addEventListener('click', showSearchModal);
+  btnRandom.addEventListener('click', jumpToRandom);
   btnSearchClose.addEventListener('click', closeSearchModal);
   btnSearchGo.addEventListener('click', executeSearchGo);
   searchInput.addEventListener('input', handleSearchInput);
@@ -592,6 +606,10 @@ function setupEventListeners() {
       case 'KeyC':
         e.preventDefault();
         if (state.isFlipped) playPokemonCry();
+        break;
+      case 'KeyR':
+        e.preventDefault();
+        jumpToRandom();
         break;
     }
   });
