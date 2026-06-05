@@ -622,10 +622,12 @@ function jumpToRandom() {
 }
 
 function resetDeck() {
-  playSFX(soundNext);
-  createNewDeck();
-  updateProgressUI();
-  loadCurrentPokemon();
+  if (window.confirm("Are you sure you want to reset your progress and reshuffle the deck?")) {
+    playSFX(soundNext);
+    createNewDeck();
+    updateProgressUI();
+    loadCurrentPokemon();
+  }
 }
 
 // Event Listeners Setup
