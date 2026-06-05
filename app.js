@@ -325,7 +325,13 @@ function loadCurrentPokemon() {
   const formattedId = `#${String(pokemonId).padStart(4, '0')}`;
   cardFrontId.textContent = formattedId;
   cardBackId.textContent = formattedId;
-  frontPokemonName.textContent = basicInfo.name;
+  // Shuffle letters for Unown name display on the front to make it harder to decipher
+  const nameChars = basicInfo.name.split('');
+  for (let i = nameChars.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [nameChars[i], nameChars[j]] = [nameChars[j], nameChars[i]];
+  }
+  frontPokemonName.textContent = nameChars.join('');
 
   if (state.studyMode === 'learning') {
     state.isFlipped = true;
