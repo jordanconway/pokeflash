@@ -333,6 +333,8 @@ function loadCurrentPokemon() {
   }
   frontPokemonName.textContent = nameChars.join('');
 
+  const wasFlipped = card.classList.contains('flipped');
+
   if (state.studyMode === 'learning') {
     state.isFlipped = true;
     card.classList.add('flipped');
@@ -342,7 +344,7 @@ function loadCurrentPokemon() {
   }
   
   // Fetch detailed data in parallel background
-  fetchPokemonDetails(pokemonId);
+  fetchPokemonDetails(pokemonId, wasFlipped);
 }
 
 function resetCardBackDetails() {
@@ -363,12 +365,24 @@ function resetCardBackDetails() {
   }
 }
 
-async function fetchPokemonDetails(id) {
+async function fetchPokemonDetails(id, wasFlipped) {
   state.isLoadingDetails = true;
   try {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     if (!res.ok) throw new Error('API error');
     const data = await res.json();
+    
+    // Fetch Species description
+    const speciesRes = await fetch(data.species.url);
+    let speciesData = null;
+    if (speciesRes.ok) {
+      speciesData = await speciesRes.json();
+    }
+    
+    // If the card was flipped and is now flipping back to the front, wait for the transition to finish (400ms)
+    if (wasFlipped && state.studyMode === 'guessing') {
+      await new Promise(resolve => setTimeout(resolve, 400));
+    }
     
     // We update name to capitalize
     const displayName = data.name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -418,10 +432,7 @@ async function fetchPokemonDetails(id) {
       playPokemonCry();
     }
     
-    // Fetch Species description
-    const speciesRes = await fetch(data.species.url);
-    if (speciesRes.ok) {
-      const speciesData = await speciesRes.json();
+    if (speciesData) {
       const englishFlavor = speciesData.flavor_text_entries.find(entry => entry.language.name === 'en');
       if (englishFlavor) {
         // Clean up special characters from games representation
